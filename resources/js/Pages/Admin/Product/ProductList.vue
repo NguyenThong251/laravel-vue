@@ -1,12 +1,28 @@
 <script setup>
 import { router, usePage } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { defineProps, ref, reactive, computed } from "vue";
 import { Plus } from "@element-plus/icons-vue";
-
+import draggable from "vuedraggable";
 defineProps({
     products: Array,
 });
 
+// search start
+const searchQuery = ref("");
+
+const filterProducts = (products) => {
+    return products.filter((product) => {
+        return product.title
+            .toLowerCase()
+            .includes(searchQuery.value.toLowerCase());
+    });
+};
+
+const search = () => {
+    console.log("Search query:", searchQuery.value);
+    // Add any additional actions here if needed
+};
+// search end
 const brands = usePage().props.brands;
 const categories = usePage().props.categories;
 
@@ -17,10 +33,21 @@ const dialogVisible = ref(false);
 
 //upload mulitpel images
 const productImages = ref([]);
+
+const handleDragEnd = (event) => {
+    // Loop through each element in the product_images array and update the index
+    product_images.value.forEach((image, index) => {
+        image.index = index;
+    });
+    console.log("Kéo thả kết thúc", product_images.value);
+};
 const dialogImageUrl = ref("");
 const handleFileChange = (file) => {
     console.log(file);
-    productImages.value.push(file);
+    // productImages.value.push(file);
+    for (const file of files) {
+        productImages.value.push(file);
+    }
 };
 
 const handlePictureCardPreview = (file) => {
@@ -55,7 +82,6 @@ const openEditModal = (product, index) => {
     brand_id.value = product.brand_id;
     category_id.value = product.category_id;
     product_images.value = product.product_images;
-
     editMode.value = true;
     isAddProduct.value = false;
     dialogVisible.value = true;
@@ -146,8 +172,12 @@ const updateProduct = async () => {
     // Append product images to the FormData
     for (const image of productImages.value) {
         formData.append("product_images[]", image.raw);
+        formData.append("image_indexes[]", image.index);
     }
-
+    // formData.append("product_images[]", image.raw);
+    // productimages.value.forEach((image, index) => {
+    // });
+    console.log(product_images.value);
     try {
         await router.post("products/update/" + id.value, formData, {
             onSuccess: (page) => {
@@ -199,6 +229,13 @@ const deleteProduct = (product, index) => {
         }
     });
 };
+// const handleDragEnd = (event) => {
+//     // Lặp qua mỗi phần tử trong mảng product_images và cập nhật chỉ số
+//     product_images.value.forEach((image, index) => {
+//         image.index = index;
+//     });
+//     console.log("Kéo thả kết thúc", product_images.value);
+// };
 </script>
 <template>
     <section class="p-3 sm:p-5">
@@ -339,7 +376,8 @@ const deleteProduct = (product, index) => {
                 <!-- end -->
 
                 <!-- list of images for selected product -->
-                <div class="flex mb-8 flex-nowrap">
+
+                <!-- <div class="flex mb-8 flex-nowrap">
                     <div
                         v-for="(pimage, index) in product_images"
                         :key="pimage.id"
@@ -360,7 +398,31 @@ const deleteProduct = (product, index) => {
                             >
                         </span>
                     </div>
-                </div>
+                </div> -->
+                <draggable
+                    v-model="product_images"
+                    class="flex mb-8 flex-nowrap"
+                    @end="handleDragEnd"
+                >
+                    <template #item="{ element, index }">
+                        <div class="relative w-32 h-32">
+                            <img
+                                class="w-24 h-20 rounded"
+                                :src="`/${element.image}`"
+                                alt=""
+                            />
+                            <span
+                                class="absolute top-0 right-8 transform -translate-y-1/2 w-3.5 h-3.5 bg-red-400 border-2 border-white dark:border-gray-800 rounded-full"
+                            >
+                                <span
+                                    @click="deleteImage(element, index)"
+                                    class="absolute text-xs font-bold text-white transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                    >x</span
+                                >
+                            </span>
+                        </div>
+                    </template>
+                </draggable>
 
                 <!-- end -->
 
@@ -409,6 +471,8 @@ const deleteProduct = (product, index) => {
                                 </div>
                                 <input
                                     type="text"
+                                    v-model="searchQuery"
+                                    @keyup.enter="search"
                                     id="simple-search"
                                     class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                     placeholder="Search"
@@ -631,7 +695,9 @@ const deleteProduct = (product, index) => {
                         </thead>
                         <tbody>
                             <tr
-                                v-for="(product, index) in products"
+                                v-for="(product, index) in filterProducts(
+                                    products
+                                )"
                                 :key="product.id"
                                 class="border-b dark:border-gray-700"
                             >

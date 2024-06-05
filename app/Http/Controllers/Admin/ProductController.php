@@ -30,7 +30,6 @@ class ProductController extends Controller
     }
 
 
-
     public function store(Request $request)
     {
 
@@ -67,7 +66,6 @@ class ProductController extends Controller
     {
 
         $product = Product::findOrFail($id);
-
         // dd($product);
         $product->title = $request->title;
         $product->price = $request->price;
@@ -75,6 +73,7 @@ class ProductController extends Controller
         $product->description = $request->description;
         $product->category_id = $request->category_id;
         $product->brand_id = $request->brand_id;
+        // Xóa hết các hình ảnh sản phẩm cũ
         // Check if product images were uploaded
         if ($request->hasFile('product_images')) {
             $productImages = $request->file('product_images');
@@ -96,6 +95,8 @@ class ProductController extends Controller
         $product->update();
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
     }
+
+
 
     public function deleteImage($id)
     {
