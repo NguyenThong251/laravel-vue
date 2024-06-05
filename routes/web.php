@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\CartController;
@@ -69,7 +71,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::put('/products/update/{id}',[ProductController::class,'update'])->name('admin.products.update');
     Route::delete('/products/image/{id}',[ProductController::class,'deleteImage'])->name('admin.products.image.delete');
     Route::delete('/products/destory/{id}',[ProductController::class,'destory'])->name('admin.products.destory');
-    
+    // brands routes
+    Route::get('/brands',[BrandController::class, 'index'])->name('admin.brands.index');
+    Route::post('/brands/store',[BrandController::class, 'store'])->name('admin.brands.store');
+    Route::put('/brands/update/{id}',[BrandController::class, 'update'])->name('admin.brands.update');
+    Route::delete('/brands/destory/{id}',[BrandController::class, 'destory'])->name('admin.brands.destory');
+    // categories routes
+    Route::get('/categories',[CategoryController::class, 'index'])->name('admin.categories.index');
+    Route::post('/categories/store',[CategoryController::class, 'store'])->name('admin.categories.store');
+    Route::put('/categories/update/{id}',[CategoryController::class, 'update'])->name('admin.categories.update');
+    Route::delete('/categories/destory/{id}',[CategoryController::class, 'destory'])->name('admin.categories.destory');
 });
 
 //end
