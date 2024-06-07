@@ -63,6 +63,8 @@ const id = ref("");
 const title = ref("");
 const price = ref("");
 const quantity = ref("");
+const price_old = ref("");
+const hot = ref("");
 const description = ref("");
 const product_images = ref([]);
 const published = ref("");
@@ -77,6 +79,8 @@ const openEditModal = (product, index) => {
     id.value = product.id;
     title.value = product.title;
     price.value = product.price;
+    price_old.value = product.price_old;
+    hot.value = product.hot;
     quantity.value = product.quantity;
     description.value = product.description;
     brand_id.value = product.brand_id;
@@ -100,6 +104,8 @@ const AddProduct = async () => {
     formData.append("title", title.value);
     formData.append("price", price.value);
     formData.append("quantity", quantity.value);
+    formData.append("price_old", price_old.value);
+    formData.append("hot", hot.value);
     formData.append("description", description.value);
     formData.append("brand_id", brand_id.value);
     formData.append("category_id", category_id.value);
@@ -132,6 +138,8 @@ const resetFormData = () => {
     id.value = "";
     title.value = "";
     price.value = "";
+    price_old.value = "";
+    hot.value = "";
     quantity.value = "";
     description.value = "";
     productImages.value = [];
@@ -164,6 +172,8 @@ const updateProduct = async () => {
     const formData = new FormData();
     formData.append("title", title.value);
     formData.append("price", price.value);
+    formData.append("price_old", price_old.value);
+    formData.append("hot", hot.value);
     formData.append("quantity", quantity.value);
     formData.append("description", description.value);
     formData.append("category_id", category_id.value);
@@ -279,6 +289,41 @@ const deleteProduct = (product, index) => {
                         for="floating_price"
                         class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
                         >Price</label
+                    >
+                </div>
+                <!-- price_old input field -->
+                <div class="relative z-0 w-full mb-6 group">
+                    <input
+                        type="text"
+                        name="floating_price_old"
+                        id="floating_price_old"
+                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                        placeholder=" "
+                        required
+                        v-model="price_old"
+                    />
+                    <label
+                        for="floating_price_old"
+                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >Price Old</label
+                    >
+                </div>
+
+                <!-- hot input field -->
+                <div class="relative z-0 w-full mb-6 group">
+                    <input
+                        type="text"
+                        name="floating_hot"
+                        id="floating_hot"
+                        class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                        placeholder=" "
+                        required
+                        v-model="hot"
+                    />
+                    <label
+                        for="floating_hot"
+                        class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                        >Hot</label
                     >
                 </div>
                 <div class="relative z-0 w-full mb-6 group">
@@ -684,7 +729,7 @@ const deleteProduct = (product, index) => {
                                 <th scope="col" class="px-4 py-3">Brand</th>
                                 <th scope="col" class="px-4 py-3">Quantity</th>
                                 <th scope="col" class="px-4 py-3">Price</th>
-                                <th scope="col" class="px-4 py-3">Price new</th>
+                                <th scope="col" class="px-4 py-3">Price old</th>
                                 <th scope="col" class="px-4 py-3">Hot</th>
                                 <th scope="col" class="px-4 py-3">Stock</th>
                                 <th scope="col" class="px-4 py-3">Publish</th>
@@ -717,9 +762,22 @@ const deleteProduct = (product, index) => {
                                     {{ product.quantity }}
                                 </td>
                                 <td class="px-4 py-3">${{ product.price }}</td>
-                                <td class="px-4 py-3">Null</td>
-                                <td class="px-4 py-3">Null</td>
+                                <td class="px-4 py-3">
+                                    {{ product.price_old }}
+                                </td>
 
+                                <td class="px-4 py-3">
+                                    <span
+                                        v-if="product.hot == 1"
+                                        class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                        >Hot</span
+                                    >
+                                    <span
+                                        v-else
+                                        class="bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                                        >Out trend</span
+                                    >
+                                </td>
                                 <td class="px-4 py-3">
                                     <span
                                         v-if="product.inStock == 0"

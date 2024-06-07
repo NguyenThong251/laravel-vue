@@ -36,6 +36,8 @@ class ProductController extends Controller
         $product = new Product;
         $product->title = $request->title;
         $product->price = $request->price;
+        $product->price_old = $request->price_old;
+        $product->hot = $request->hot;
         $product->quantity = $request->quantity;
         $product->description = $request->description;
         $product->category_id = $request->category_id;
@@ -69,6 +71,8 @@ class ProductController extends Controller
         // dd($product);
         $product->title = $request->title;
         $product->price = $request->price;
+        $product->price_old = $request->price_old;
+        $product->hot = $request->hot;
         $product->quantity = $request->quantity;
         $product->description = $request->description;
         $product->category_id = $request->category_id;

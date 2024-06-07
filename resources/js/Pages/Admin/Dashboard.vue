@@ -1,36 +1,46 @@
 <template>
     <AdminLayout>
-        <div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                <div class="border-2 border-dashed border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-64"></div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64"></div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64"></div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-32 md:h-64"></div>
-            </div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"></div>
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-            </div>
-            <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-96 mb-4"></div>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-                <div class="border-2 border-dashed rounded-lg border-gray-300 dark:border-gray-600 h-48 md:h-72"></div>
-            </div>
+        <div
+            class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5"
+        >
+            <DataStatsOne
+                :total-bills="totalBills"
+                :total-profit="totalProfit"
+                :total-products="totalProducts"
+                :total-users="totalUsers"
+            />
+        </div>
+
+        <div
+            class="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5"
+        >
+            <ChartOne :user-data="userData" :bill-data="billData" />
+
+            <ChartTwo />
+
+            <ChartThree />
         </div>
     </AdminLayout>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-import { initFlowbite } from 'flowbite'
-import AdminLayout from './Components/AdminLayout.vue'
+import { onMounted } from "vue";
+import { initFlowbite } from "flowbite";
+import AdminLayout from "./Components/AdminLayout.vue";
+import DataStatsOne from "./components/DataStats/DataStatsOne.vue";
+import ChartOne from "./components/Charts/ChartOne.vue";
+import ChartThree from "./components/Charts/ChartThree.vue";
+import ChartTwo from "./components/Charts/ChartTwo.vue";
 // initialize components based on data attribute selectors
 onMounted(() => {
     initFlowbite();
-})
+});
+const props = defineProps({
+    totalBills: Number,
+    totalProfit: Number,
+    totalProducts: Number,
+    totalUsers: Number,
+    userData: Array,
+    billData: Array,
+});
 </script>

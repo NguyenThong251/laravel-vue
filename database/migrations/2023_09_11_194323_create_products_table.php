@@ -23,8 +23,8 @@ return new class extends Migration
             $table->boolean('published')->default(0);
             $table->boolean('inStock')->default(0);
             $table->decimal('price',10,2);
-            // $table->boolean('hot')->default(0);
-            // $table->decimal('priceOld',10,2);
+            $table->boolean('hot')->default(0);
+            $table->decimal('price_old',10,2);
 
             $table->foreignIdFor(User::class, 'created_by')->nullable();
             $table->foreignIdFor(User::class, 'updated_by')->nullable();
