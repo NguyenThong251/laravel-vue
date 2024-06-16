@@ -1,13 +1,33 @@
 <script setup>
+import { ref } from "vue";
 import UserLayouts from "./Layouts/UserLayouts.vue";
 const props = defineProps({
     products: Object,
 });
 console.log(props);
-const image =
+const selectedImage = ref(
     props.products.data.product_images.length > 0
         ? props.products.data.product_images[0].image
-        : null;
+        : null
+);
+
+const selectedIndex = ref(0);
+const setImage = (image, index) => {
+    selectedImage.value = image;
+    selectedIndex.value = index;
+};
+// Counter logic
+const quantity = ref(1);
+
+const increment = () => {
+    quantity.value += 1;
+};
+
+const decrement = () => {
+    if (quantity.value > 1) {
+        quantity.value -= 1;
+    }
+};
 </script>
 <template>
     <UserLayouts>
@@ -67,9 +87,9 @@ const image =
                                     class="max-w-xl overflow-hidden rounded-lg"
                                 >
                                     <img
-                                        v-if="image"
+                                        v-if="selectedImage"
                                         class="object-cover w-full h-full max-w-full"
-                                        :src="`/${image}`"
+                                        :src="`/${selectedImage}`"
                                         :alt="products.data.title"
                                     />
                                     <img
@@ -90,8 +110,16 @@ const image =
                                     <button
                                         v-for="(image, index) in products.data
                                             .product_images"
+                                        :key="index"
+                                        @click="setImage(image.image, index)"
                                         type="button"
-                                        class="h-20 mb-3 overflow-hidden text-center border-2 rounded-lg flex-0 aspect-square"
+                                        :class="[
+                                            'h-20 mb-3 overflow-hidden text-center border-2 rounded-lg flex-0 aspect-square',
+                                            {
+                                                'border-gray-900':
+                                                    selectedIndex === index,
+                                            },
+                                        ]"
                                     >
                                         <!-- border-gray-900 -->
                                         <img
@@ -235,6 +263,7 @@ const image =
                                 <div class="relative flex items-center">
                                     <button
                                         type="button"
+                                        @click="decrement"
                                         id="decrement-button"
                                         data-input-counter-decrement="counter-input"
                                         class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
@@ -256,15 +285,16 @@ const image =
                                         </svg>
                                     </button>
                                     <input
+                                        v-model="quantity"
                                         type="text"
                                         id="counter-input"
                                         data-input-counter
                                         class="flex-shrink-0 text-gray-900 dark:text-white border-0 bg-transparent text-lg font-normal focus:outline-none focus:ring-0 max-w-[2.5rem] text-center"
                                         placeholder=""
-                                        value="1"
                                         required
                                     />
                                     <button
+                                        @click="increment"
                                         type="button"
                                         id="increment-button"
                                         data-input-counter-increment="counter-input"
