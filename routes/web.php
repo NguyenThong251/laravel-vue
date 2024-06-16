@@ -47,7 +47,7 @@ Route::prefix('cart')->controller(CartController::class)->group(function () {
 //routes for products list and filter 
 Route::prefix('products')->controller(ProductListController::class)->group(function ()  {
     Route::get('/','index')->name('products.index');
-    
+    Route::get('/detail/{id}',[ProductListController::class,'detail'])->name('products.detail');
 });
 
 
@@ -71,6 +71,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::put('/products/update/{id}',[ProductController::class,'update'])->name('admin.products.update');
     Route::delete('/products/image/{id}',[ProductController::class,'deleteImage'])->name('admin.products.image.delete');
     Route::delete('/products/destory/{id}',[ProductController::class,'destory'])->name('admin.products.destory');
+
     // brands routes
     Route::get('/brands',[BrandController::class, 'index'])->name('admin.brands.index');
     Route::post('/brands/store',[BrandController::class, 'store'])->name('admin.brands.store');

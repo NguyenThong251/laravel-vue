@@ -374,7 +374,7 @@ function updateFilteredProducts() {
                                         class="self-end"
                                         @click="priceFilter()"
                                     >
-                                        Ok
+                                        Filter
                                     </SecondaryButtonVue>
                                 </div>
 
@@ -487,7 +487,6 @@ function updateFilteredProducts() {
                                         </div>
                                     </DisclosurePanel>
                                 </Disclosure>
-
                                 <!-- end -->
                             </form>
 

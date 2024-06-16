@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 
 defineProps({
@@ -21,6 +22,15 @@ const addToCart = (product) => {
         },
     });
 };
+// Hàm tính phần trăm giảm giá
+const productDiscountPercentage = (product) => {
+    if (product.price_old > 0 && product.price < product.price_old) {
+        return Math.round(
+            ((product.price_old - product.price) / product.price_old) * 100
+        );
+    }
+    return 0;
+};
 </script>
 <template>
     <div
@@ -32,7 +42,7 @@ const addToCart = (product) => {
             class="relative group"
         >
             <div
-                class="w-full overflow-hidden bg-gray-200 rounded-md aspect-h-1 aspect-w-1 lg:aspect-none lg:h-80"
+                class="relative w-full overflow-hidden bg-gray-200 rounded-md aspect-h-1 aspect-w-1 lg:aspect-none lg:h-80"
             >
                 <img
                     v-if="product.product_images.length > 0"
@@ -46,7 +56,16 @@ const addToCart = (product) => {
                     :alt="product.imageAlt"
                     class="object-cover object-center w-full h-full lg:h-full lg:w-full"
                 />
-
+                <span
+                    v-if="product.price_old > 0"
+                    class="absolute top-0 left-0 px-2 m-2 text-sm font-medium text-center text-white bg-green-400 rounded-full"
+                    >{{ productDiscountPercentage(product) }}%</span
+                >
+                <span
+                    v-if="product.hot == 1"
+                    class="absolute top-0 right-0 px-2 m-2 text-sm font-medium text-center text-white bg-red-500 rounded-full"
+                    >Hot</span
+                >
                 <!-- add to cart icon -->
                 <div
                     class="absolute inset-0 flex items-center justify-center opacity-0 cursor-pointer group-hover:opacity-100"
@@ -70,7 +89,7 @@ const addToCart = (product) => {
                         </a>
                     </div>
                     <div class="p-2 ml-2 bg-blue-700 rounded-full">
-                        <a href="detail">
+                        <a :href="route('products.detail', product.id)">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -95,19 +114,32 @@ const addToCart = (product) => {
                 </div>
                 <!-- end -->
             </div>
-            <div class="flex justify-between mt-4">
-                <div>
-                    <h3 class="text-sm text-gray-700">
+            <div class="flex flex-col justify-between mt-4">
+                <div class="flex justify-between">
+                    <h3 class="text-lg font-medium text-gray-700">
                         <span aria-hidden="true" class="" />
                         {{ product.title }}
                     </h3>
-                    <p class="mt-1 text-sm text-gray-500">
+                    <p class="mt-1 text-gray-500 text-md">
                         {{ product.brand.name }}
                     </p>
                 </div>
-                <p class="text-sm font-medium text-gray-900">
-                    ${{ product.price }}
-                </p>
+                <h3 class="font-medium text-gray-700 text-md">
+                    <span aria-hidden="true" class="" />
+                    {{ product.category.name }}
+                </h3>
+
+                <div class="flex items-center gap-3">
+                    <p class="text-lg font-medium text-gray-900">
+                        ${{ product.price }}
+                    </p>
+                    <del
+                        v-if="product.price_old > 0"
+                        class="font-medium text-gray-900 text-md"
+                    >
+                        ${{ product.price_old }}</del
+                    >
+                </div>
             </div>
         </div>
     </div>
